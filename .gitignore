@@ -1,0 +1,5 @@
+.env
+node_modules/
+db_backup/
+ml-api/mlenv/
+ml-api/__pycache__/

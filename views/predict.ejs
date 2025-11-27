@@ -1,0 +1,241 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="row mt-3">
+  <div class="col-8 offset-2">
+    <h3>Predict Your Next Destination</h3>
+    <p>Fill in the details below and our AI will suggest the perfect spot!</p>
+
+    <!-- This form matches your ML model's inputs -->
+    <form id="predict-form" class="needs-validation" novalidate>
+
+      <!-- start_location -->
+      <div class="mb-3">
+        <label for="start_location" class="form-label">Where are you starting from?</label>
+        <select id="start_location" name="start_location" class="form-select" required>
+          <option value="" selected disabled>Choose...</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Delhi">Delhi</option>
+          <option value="Kolkata">Kolkata</option>
+          <option value="Chennai">Chennai</option>
+          <option value="Bangalore">Bangalore</option>
+        </select>
+        <div class="invalid-feedback">Please select a starting location.</div>
+      </div>
+
+      <!-- season -->
+      <div class="mb-3">
+        <label for="season" class="form-label">What season are you traveling?</label>
+        <select id="season" name="season" class="form-select" required>
+          <option value="" selected disabled>Choose...</option>
+          <option value="Winter">Winter</option>
+          <option value="Summer">Summer</option>
+          <option value="Monsoon">Monsoon</option>
+          <option value="Spring">Spring</option>
+        </select>
+        <div class="invalid-feedback">Please select a season.</div>
+      </div>
+
+      <!-- day_type -->
+      <div class="mb-3">
+        <label for="day_type" class="form-label">Day of travel?</label>
+        <select id="day_type" name="day_type" class="form-select" required>
+          <option value="" selected disabled>Choose...</option>
+          <option value="Weekend">Weekend</option>
+          <option value="Weekday">Weekday</option>
+        </select>
+        <div class="invalid-feedback">Please select a day type.</div>
+      </div>
+      
+      <!-- user_budget -->
+      <div class="mb-3">
+        <label for="user_budget" class="form-label">What's your budget (in ₹)?</label>
+        <input type="number" id="user_budget" name="user_budget" class="form-control" placeholder="e.g., 5000" min="1000" max="50000" required />
+        <div class="invalid-feedback">Please enter a valid budget (1000-50000).</div>
+      </div>
+
+      <!-- user_time_constraint_hr -->
+      <div class="mb-3">
+        <label for="user_time_constraint_hr" class="form-label">How many hours do you want to spend onsite?</label>
+        <input type="number" id="user_time_constraint_hr" name="user_time_constraint_hr" class="form-control" placeholder="e.g., 12" step="0.5" required />
+        <div class="invalid-feedback">Please enter a valid time.</div>
+      </div>
+      
+      <!-- preferred_transport_mode -->
+      <div class="mb-3">
+        <label for="preferred_transport_mode" class="form-label">Preferred mode of transport?</label>
+        <select id="preferred_transport_mode" name="preferred_transport_mode" class="form-select" required>
+          <option value="" selected disabled>Choose...</option>
+          <option value="Train">Train</option>
+          <option value="Bus">Bus</option>
+          <option value="Car">Car</option>
+          <option value="Flight">Flight</option>
+        </select>
+        <div class="invalid-feedback">Please select a transport mode.</div>
+      </div>
+
+      <!-- popularity_score (New Slider) -->
+      <div class="mb-3">
+        <label for="popularity_score" class="form-label">How crowded do you want it? (0 = Hidden Gem, 1 = Very Popular)</label>
+        <input type="range" class="form-range" id="popularity_score" name="popularity_score" min="0" max="1" step="0.1" value="0.7">
+        <div class="d-flex justify-content-between">
+            <small>Hidden Gem</small>
+            <small>Popular</small>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-dark add-btn" id="predict-btn">Find My Destination ✈️</button>
+    </form>
+    
+    <!-- This is where the results will be displayed -->
+    <div id="prediction-result-container" class="mt-4">
+      <!-- Title for results -->
+      <h4 id="recommendation-title" style="display: none;">We recommend...</h4>
+      
+      <!-- The actual results will be injected here -->
+      <div id="prediction-cards"></div>
+    </div>
+
+    <!-- Loading spinner -->
+     <div id="loading-spinner" class="mt-4 text-center" style="display: none;">
+        <div class="spinner-border text-dark" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Finding the best destinations for you...</p>
+      </div>
+
+      <!-- Error message box -->
+      <div id="error-box" class="alert alert-danger mt-4" style="display: none;"></div>
+  </div>
+</div>
+
+<script>
+  // Add validation
+  (() => {
+    'use-strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+
+
+  // Handle the form submission
+  const form = document.getElementById('predict-form');
+  const predictBtn = document.getElementById('predict-btn');
+  const resultTitle = document.getElementById('recommendation-title');
+  const resultCards = document.getElementById('prediction-cards');
+  const loadingSpinner = document.getElementById('loading-spinner');
+  const errorBox = document.getElementById('error-box');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Stop the form from reloading the page
+
+    if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+    }
+
+    // --- Show loading, hide old results ---
+    predictBtn.disabled = true;
+    predictBtn.innerHTML = "Predicting...";
+    loadingSpinner.style.display = 'block';
+    resultTitle.style.display = 'none';
+    resultCards.innerHTML = ''; // Clear old cards
+    errorBox.style.display = 'none';
+
+    // 1. Get data from the form
+    const formData = new FormData(form);
+    
+    // Create the JSON payload that app.py expects
+    const payload = {
+        start_location: formData.get('start_location'),
+        season: formData.get('season'),
+        day_type: formData.get('day_type'),
+        user_budget: formData.get('user_budget'),
+        user_time_constraint_hr: formData.get('user_time_constraint_hr'),
+        preferred_transport_mode: formData.get('preferred_transport_mode'),
+        popularity_score: formData.get('popularity_score')
+    };
+
+    try {
+      // 3. Send the data to your ML model's API
+      const response = await fetch('http://localhost:5000/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload), // Send the payload
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || 'Something went wrong with the prediction.');
+      }
+
+      const data = await response.json(); // { "recommendations": [...] }
+
+      // 4. Display the results
+      displayRecommendations(data.recommendations);
+
+    } catch (error) {
+      console.error('Error during prediction:', error);
+      errorBox.innerText = `Error: ${error.message}. Is the prediction server (app.py) running?`;
+      errorBox.style.display = 'block';
+    } finally {
+      // --- Hide loading, restore button ---
+      predictBtn.disabled = false;
+      predictBtn.innerHTML = "Find My Destination ✈️";
+      loadingSpinner.style.display = 'none';
+    }
+  });
+
+  function displayRecommendations(recommendations) {
+    resultCards.innerHTML = ''; // Clear old results
+    
+    if (!recommendations || recommendations.length === 0) {
+        resultTitle.style.display = 'block';
+        resultTitle.innerText = "Sorry, no matching trips found. Try adjusting your filters!";
+        return;
+    }
+
+    resultTitle.style.display = 'block';
+    resultTitle.innerText = "Here Are Your Top Recommendations!";
+    
+    let cardsHtml = '';
+    recommendations.forEach(rec => {
+        // Formatting logic similar to your Streamlit app
+        const satisfaction = parseFloat(rec.predicted_satisfaction).toFixed(2);
+        const cost = "₹" + parseFloat(rec.total_cost).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+        const time = parseFloat(rec.estimated_travel_time_hr).toFixed(1);
+        const popularity = (parseFloat(rec.popularity_score) * 100).toFixed(0) + "%";
+
+        cardsHtml += `
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">${rec.end_location}</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Vibe:</strong> ${rec.destination_type}</p>
+                            <p class="mb-1"><strong>Transport:</strong> ${rec.transport_mode}</p>
+                            <p class="mb-1"><strong>Crowdedness:</strong> ${popularity}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Est. Cost:</strong> ${cost}</p>
+                            <p class="mb-1"><strong>Rec. Time:</strong> ${time} hrs</p>
+                            <p class="mb-1 text-success"><strong>Satisfaction Score:</strong> ${satisfaction} / 5.0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    resultCards.innerHTML = cardsHtml;
+  }
+</script>

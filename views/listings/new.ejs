@@ -1,0 +1,63 @@
+<% layout("./layouts/boilerplate") %>
+
+    <div class="row">
+        <div class="col-8">
+            <h3>Create New Listing</h3>
+            <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input name="listing[title]" placeholder="Eg: Rosy's Cottage" type="text" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Please mention title.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="listing[description]" class="form-control" required></textarea>
+                    <div class="invalid-feedback">
+                        Please write description.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input name="listing[price]" placeholder="Eg: 1800" type="number" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Please mention price.
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="mb-3 col-md-6">
+                        <label for="location" class="form-label">Location</label>
+                        <input name="listing[location]" placeholder="Eg: Jaipur" type="text" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Please enter city/state.
+                        </div>
+                    </div>
+
+                    <div class="mb-3 col-md-6">
+                        <label for="country" class="form-label">Country</label>
+                        <input name="listing[country]" placeholder="Eg: India" type="text" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Please enter country.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image-url" class="form-label">Image URL</label>
+                    <input name="image" type="file" class="form-control">
+                </div>
+
+                <!-- <div class="mb-3">
+                    <label for="image-filename" class="form-label">Image Filename (optional)</label>
+                    <input name="listing[image][filename]" placeholder="Defaults to 'listingimage'" type="text"
+                        class="form-control">
+                </div> -->
+
+                <button class="btn btn-dark mb-3 add-btn">Add</button>
+            </form>
+        </div>
+    </div>

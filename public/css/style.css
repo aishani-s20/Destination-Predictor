@@ -1,0 +1,163 @@
+body{
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+footer {
+  background-color: #f8f9fa;
+  text-align: center;
+  margin-top: auto; /* this pushes footer down */
+}
+
+/* Navbar */
+.navbar{
+    height: 5rem
+}
+
+.fa-compass{
+    color: #fe424d;
+    font-size: 2rem;
+}
+
+.nav-link{
+    color: #222222 !important;
+}
+
+.f-info{
+    text-align: center;
+    height: 8rem;
+    background-color: #ebebeb;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.f-info-socials, .f-info-links, .f-info-company{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.f-info-socials i{
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.f-info-company{
+    width: 100%;
+}
+
+.f-info-links a {
+    text-decoration: none;
+    color: #222222;
+}
+
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+
+
+/* cards */
+
+.row{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.listing-card{
+    border: none !important;
+    /* margin-bottom: 2rem; */
+}
+
+.img-container {
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+.index-card-img {
+  height: 18rem;
+  object-fit: cover;
+  width: 100%;
+}
+
+.card-img-top{
+    border-radius: 1rem;
+    width: 100% !important;
+    object-fit: cover !important;
+    transition: transform 0.4s ease;
+}
+
+.index-card:hover .card-img-top {
+    transform: scale(1.1);
+}
+
+.card-body{
+    padding: 0;
+}
+
+.card-text{
+    font-weight: 400 !important;
+}
+
+.listing-link {
+    text-decoration: none;
+    width: 22rem;
+    padding: 0;
+}
+
+
+.card-img-overlay{
+    opacity: 0;
+}
+
+.card-img-overlay:hover {
+    opacity: 0.4;
+    background-color: white;
+}
+
+/* New Page */
+.add-btn{
+    background-color: #fe424d;
+    border: none;
+}
+
+
+/* Show Page */
+.show-img{
+    height: 60vh;
+}
+
+.btns{
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+.show-card{
+    margin-bottom: 1rem;
+}
+
+/* alert */
+.alert {
+    margin-top: 5rem;
+}
+
+.alert-success{
+    margin-top: 0;
+}
+
+.alert-danger{
+    margin-top: 0;
+}
+
+/* map */
+#map {
+    height: 400px !important;       /* Adjust height as needed */
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 10px;
+}
