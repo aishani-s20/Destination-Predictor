@@ -165,7 +165,7 @@
 
     try {
       // 3. Send the data to your ML model's API
-      const response = await fetch('https://destination-predictor-ml-api.onrender.com', {
+      const response = await fetch('https://destination-predictor-ml-api.onrender.com/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
