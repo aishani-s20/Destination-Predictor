@@ -50,9 +50,9 @@ app.use(flash());
 
 
 // root route
-// app.get("/", (req, res) => {
-//     res.send("root working");
-// });
+app.get("/", (req, res) => {
+    res.send("root working");
+});
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
