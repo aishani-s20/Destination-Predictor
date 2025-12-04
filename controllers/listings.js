@@ -26,7 +26,7 @@ module.exports.showListing = async (req, res) => {
 };
 
 // ---------------------------------------------------------
-// FIX APPLIED HERE: Added 'headers' to the axios call
+// FIX: Added your specific Email and Render Link here
 // ---------------------------------------------------------
 module.exports.createListing = async (req, res, next) => {
     try {
@@ -44,8 +44,10 @@ module.exports.createListing = async (req, res, next) => {
                 limit: 1,
             },
             headers: {
-                // REQUIRED: Identify your app to avoid 403 Forbidden errors
-                "User-Agent": "TravellerApp/1.0 (my-email@example.com)" 
+                // REQUIRED: Your specific email
+                "User-Agent": "TravellerApp/1.0 (aishani1020@gmail.com)",
+                // REQUIRED: Your specific Render URL
+                "Referer": "https://destination-predictor.onrender.com/"
             }
         });
 
@@ -97,7 +99,7 @@ module.exports.renderEditForm = async (req, res) => {
 };
 
 // ---------------------------------------------------------
-// FIX APPLIED HERE ALSO: Added 'headers' to update logic
+// FIX: Added your specific Email and Render Link here too
 // ---------------------------------------------------------
 module.exports.updateListing = async (req, res) => {
     try {
@@ -114,8 +116,10 @@ module.exports.updateListing = async (req, res) => {
                     limit: 1
                 },
                 headers: {
-                    // REQUIRED: Identify your app here as well
-                    "User-Agent": "TravellerApp/1.0 (my-email@example.com)"
+                    // REQUIRED: Your specific email
+                    "User-Agent": "TravellerApp/1.0 (aishani1020@gmail.com)",
+                    // REQUIRED: Your specific Render URL
+                    "Referer": "https://destination-predictor.onrender.com/"
                 }
             });
 
